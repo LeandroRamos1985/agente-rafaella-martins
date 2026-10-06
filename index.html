@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atendimento em ação | Nutricionista Rafaella Martins</title>
+<meta name="description" content="Demonstração do atendimento da nutricionista Rafaella Martins: tira dúvidas, consulta a agenda, reserva o horário e avisa a Rafaella.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#170d10">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+:root{
+  --espresso:#170d10;--cocoa:#221318;--bark:#3a2029;--cream:#f4ebe6;--oat:#cdb9b6;--copper:#d98a9b;--ok:#9ccb8a;--warn:#e7b96a;
+  --line:rgba(244,235,230,.14);
+  --display:"Archivo","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --text:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;background:var(--espresso);color:var(--cream);font-family:var(--text);font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;color:inherit}
+h1,h2,p,ul,ol,dl,dd{margin:0;padding:0}
+ul,ol{list-style:none}
+:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+.app{height:100%;display:flex;flex-direction:column}
+
+/* topo */
+.top{display:flex;align-items:center;gap:16px;padding:12px clamp(14px,2.4vw,28px);border-bottom:1px solid var(--line);flex:none}
+.top h1{font-family:var(--display);font-stretch:68%;font-weight:800;text-transform:uppercase;font-size:clamp(1.05rem,2vw,1.5rem);line-height:1}
+.top p{font-size:.84rem;color:var(--oat);margin-top:3px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex:none}
+.btn{border-radius:999px;padding:0 18px;min-height:42px;font-weight:600;font-size:.92rem;border:1px solid var(--line);background:transparent}
+.btn:hover{border-color:var(--cream)}
+.btn-main{background:var(--copper);color:var(--espresso);border-color:var(--copper)}
+.btn-main:hover{background:#e7a3b1;border-color:#e7a3b1}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* abas (só no celular) */
+.tabs{display:none;flex:none;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:12px 8px;font-weight:600;color:var(--oat);min-height:46px}
+.tabs button[aria-selected="true"]{color:var(--cream);border-bottom-color:var(--copper)}
+.badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--copper);color:var(--espresso);font-size:.75rem;line-height:20px}
+.badge:empty{display:none}
+
+/* corpo */
+.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr) minmax(260px,320px)}
+.col{min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.col:last-child{border-right:0}
+.col-head{padding:14px 18px 10px;flex:none}
+.col-head h2{font-size:.95rem;font-weight:700}
+.col-head p{font-size:.82rem;color:var(--oat)}
+
+/* conversa */
+.log{flex:1;min-height:0;overflow-y:auto;padding:6px 14px 10px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:88%;padding:10px 13px;border-radius:14px;white-space:pre-line;overflow-wrap:anywhere;font-size:.95rem;line-height:1.45}
+.msg.in{background:var(--bark);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:var(--cream);color:var(--espresso);align-self:flex-end;border-bottom-right-radius:4px}
+.msg a{color:var(--copper);font-weight:600}
+.who{font-size:.74rem;color:var(--oat);margin:6px 2px -4px}
+.who.right{align-self:flex-end}
+.typing{align-self:flex-start;background:var(--bark);border-radius:14px;padding:13px 15px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--oat);animation:blink 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.quick{display:flex;flex-wrap:wrap;gap:6px;padding:4px 14px 8px;flex:none}
+.quick button{background:transparent;border:1px solid var(--copper);color:var(--cream);border-radius:999px;padding:8px 14px;font-size:.88rem;font-weight:600;min-height:38px}
+.quick button:hover{background:rgba(217,138,155,.16)}
+.composer{display:flex;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line);flex:none}
+.composer input{flex:1;min-width:0;background:var(--cocoa);border:1px solid var(--line);border-radius:999px;padding:12px 16px;font:inherit;color:var(--cream);min-height:46px}
+.composer input::placeholder{color:var(--oat)}
+.composer button{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--cream);color:var(--espresso);display:flex;align-items:center;justify-content:center}
+.composer svg{width:19px;height:19px}
+
+/* bastidores */
+.trail{flex:1;min-height:0;overflow-y:auto;padding:4px 18px 20px}
+.trail li{position:relative;padding:0 0 18px 26px;border-left:1px solid var(--line);margin-left:7px}
+.trail li:last-child{border-left-color:transparent}
+.trail li::before{content:"";position:absolute;left:-7px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--espresso);border:2px solid var(--oat)}
+.trail li.ler::before{border-color:var(--oat)}
+.trail li.agir::before{border-color:var(--ok);background:var(--ok)}
+.trail li.regra::before{border-color:var(--warn)}
+.trail li.humano::before{border-color:var(--warn);background:var(--warn)}
+.trail li.rodando::before{border-color:var(--copper);border-top-color:transparent;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.trail strong{display:block;font-weight:600;font-size:.95rem}
+.trail span{display:block;color:var(--oat);font-size:.88rem;margin-top:2px}
+.trail em{font-style:normal;font-size:.72rem;color:var(--espresso);background:var(--oat);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.trail time{font-size:.74rem;color:var(--oat)}
+.empty{color:var(--oat);font-size:.9rem;padding:4px 18px}
+
+/* ficha */
+.side{overflow-y:auto}
+.card{padding:4px 18px 18px;border-bottom:1px solid var(--line)}
+.card:last-child{border-bottom:0}
+.ficha div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.ficha div:last-child{border-bottom:0}
+.ficha dt{color:var(--oat)}
+.ficha dd{font-weight:600;overflow-wrap:anywhere}
+.ficha dd.vazio{font-weight:400;color:rgba(194,178,157,.5)}
+.ficha dd.novo{animation:pisca 1.2s}
+@keyframes pisca{0%{color:var(--copper)}100%{color:var(--cream)}}
+.status{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:600;background:var(--bark)}
+.status.ok{background:var(--ok);color:var(--espresso)}
+.tarefas li{display:flex;gap:10px;padding:8px 0;font-size:.9rem;border-bottom:1px solid var(--line)}
+.tarefas li:last-child{border-bottom:0}
+.tarefas li::before{content:"✓";color:var(--ok);font-weight:700}
+.rodape{padding:10px clamp(14px,2.4vw,28px);border-top:1px solid var(--line);font-size:.78rem;color:var(--oat);flex:none}
+
+@media (max-width:1100px){
+  .main{grid-template-columns:minmax(300px,380px) minmax(0,1fr)}
+  .col.side{display:none}
+  .col.bast .ficha-inline{display:block}
+}
+.ficha-inline{display:none;border-bottom:1px solid var(--line)}
+@media (max-width:760px){
+  .tabs{display:flex}
+  .main{grid-template-columns:minmax(0,1fr)}
+  .col{border-right:0}
+  body[data-tab="conversa"] .col.bast{display:none}
+  body[data-tab="bastidores"] .col.chat{display:none}
+  .top{flex-wrap:wrap}
+  .top-actions{margin-left:0;width:100%}
+  .top-actions .btn{flex:1}
+  .rodape{display:none}
+}
+@media (prefers-reduced-motion:reduce){.typing i,.trail li.rodando::before,.ficha dd.novo{animation:none}}
+</style>
+</head>
+<body data-tab="conversa">
+<div class="app">
+
+  <header class="top">
+    <div>
+      <h1>Atendimento da Nutri Rafaella Martins</h1>
+      <p>Demonstração de agente de IA: tira dúvidas com as informações da Rafaella e só agenda quando o paciente quer.</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-main" type="button" id="auto">Ver um atendimento completo</button>
+      <button class="btn" type="button" id="reset">Recomeçar</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-conversa" aria-selected="true" data-tab="conversa">Conversa</button>
+    <button type="button" role="tab" id="tab-bastidores" aria-selected="false" data-tab="bastidores">Bastidores<span class="badge" id="badge"></span></button>
+  </div>
+
+  <div class="main">
+
+    <section class="col chat" aria-label="Conversa com o paciente">
+      <div class="col-head"><h2>Conversa com o paciente</h2><p>Pergunte o que um paciente perguntaria, do seu jeito.</p></div>
+      <div class="log" id="log" role="log" aria-live="polite"></div>
+      <div class="quick" id="quick"></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <label for="campo" style="position:absolute;left:-9999px">Mensagem do paciente</label>
+        <input id="campo" type="text" maxlength="400" enterkeyhint="send" placeholder="Ex.: o atendimento é só para atletas?">
+        <button type="submit" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5 21 12 3 3.5v6.6L15 12 3 13.9z"/></svg></button>
+      </form>
+    </section>
+
+    <section class="col bast" aria-label="Bastidores do atendimento">
+      <div class="col-head"><h2>O que acontece nos bastidores</h2><p>Cada leitura, decisão e ação, em tempo real.</p></div>
+      <div class="card ficha-inline"><dl class="ficha" data-ficha></dl></div>
+      <p class="empty" id="vazio">Nada ainda. Envie uma mensagem ou toque em "Ver um atendimento completo".</p>
+      <ol class="trail" id="trail" aria-live="polite"></ol>
+    </section>
+
+    <aside class="col side" aria-label="Ficha do paciente">
+      <div class="col-head"><h2>Ficha do paciente</h2><p>Preenchida automaticamente durante a conversa.</p></div>
+      <div class="card"><dl class="ficha" data-ficha></dl></div>
+      <div class="col-head"><h2>Tarefas automáticas</h2><p>O que fica programado depois do agendamento.</p></div>
+      <div class="card"><ul class="tarefas" id="tarefas"></ul><p class="empty" id="sem-tarefas" style="padding:0">Aparecem quando o horário é reservado.</p></div>
+    </aside>
+
+  </div>
+
+  <p class="rodape">Demonstração. As respostas usam o que está no site da Rafaella. A agenda, a ficha e os avisos são simulados. Valores, horários e atendimento online entram depois que ela informar.</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var AGENDA = 'https://linktr.ee/rafamartins_nutri';
+  var ENDERECO = 'Estrada dos Três Rios, 1173, Edifício Global Office, Freguesia (Jacarepaguá), Rio de Janeiro';
+  var $ = function (id) { return document.getElementById(id); };
+  var log = $('log'), quick = $('quick'), trail = $('trail'), campo = $('campo');
+  var fila, gen = 0, S, tocando = false, novos = 0;
+
+  var CAMPOS = [['nome', 'Nome'], ['objetivo', 'Objetivo'], ['formato', 'Atendimento'], ['periodo', 'Período'], ['horario', 'Horário'], ['status', 'Status']];
+
+  /* ---------- utilidades ---------- */
+  function norm(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function tem(t, lista) { return lista.some(function (p) { return t.indexOf(p) !== -1; }); }
+  function hora() { var d = new Date(); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function passo(ms, fn) {
+    var g = gen;
+    fila = fila.then(function () {
+      if (g !== gen) { return; }
+      return new Promise(function (ok) { window.setTimeout(function () { if (g === gen) { fn(); } ok(); }, ms); });
+    });
+  }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) { e.className = cls; } if (txt != null) { e.textContent = txt; } return e; }
+
+  /* ---------- conversa ---------- */
+  function bolha(tipo, texto, link) {
+    var b = el('div', 'msg ' + tipo, texto);
+    if (link) { b.appendChild(document.createTextNode('\n')); var a = el('a', '', link.rotulo); a.href = link.url; a.target = '_blank'; a.rel = 'noopener'; b.appendChild(a); }
+    log.appendChild(b); log.scrollTop = log.scrollHeight;
+  }
+  function botoes(lista) {
+    quick.textContent = '';
+    (lista || []).forEach(function (r) { var b = el('button', '', r); b.type = 'button'; b.addEventListener('click', function () { if (!tocando) { paciente(r); } }); quick.appendChild(b); });
+  }
+  function dizer(texto, op) {
+    op = op || {};
+    var dig;
+    passo(350, function () { dig = el('div', 'typing'); dig.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(dig); log.scrollTop = log.scrollHeight; });
+    passo(Math.min(2200, 700 + texto.length * 9), function () {
+      if (dig && dig.parentNode) { dig.parentNode.removeChild(dig); }
+      bolha('in', texto, op.link);
+      if (op.botoes) { botoes(op.botoes); }
+      log.scrollTop = log.scrollHeight;
+    });
+  }
+
+  /* ---------- bastidores ---------- */
+  function registro(tipo, titulo, detalhe, simulado) {
+    $('vazio').hidden = true;
+    var li = el('li', tipo);
+    var s = el('strong', '', titulo);
+    if (simulado) { s.appendChild(el('em', '', 'simulado')); }
+    li.appendChild(s);
+    if (detalhe) { li.appendChild(el('span', '', detalhe)); }
+    li.appendChild(el('time', '', hora()));
+    trail.appendChild(li);
+    trail.scrollTop = trail.scrollHeight;
+    if (document.body.getAttribute('data-tab') === 'conversa') { novos += 1; $('badge').textContent = String(novos); }
+    return li;
+  }
+  function anotar(ms, tipo, titulo, detalhe, simulado) { passo(ms, function () { registro(tipo, titulo, detalhe, simulado); }); }
+
+  function ficha(mudou) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ficha]'), function (dl) {
+      dl.textContent = '';
+      CAMPOS.forEach(function (c) {
+        var linha = el('div'); linha.appendChild(el('dt', '', c[1]));
+        var v = S[c[0]];
+        if (c[0] === 'objetivo') { v = S.objetivo.join(', '); }
+        var dd = el('dd', v ? '' : 'vazio');
+        if (c[0] === 'status') { dd.className = ''; var st = el('span', 'status' + (S.fase === 'fechado' ? ' ok' : ''), S.status); dd.appendChild(st); }
+        else { dd.textContent = v || 'aguardando'; }
+        if (mudou && mudou.indexOf(c[0]) !== -1) { dd.className += ' novo'; }
+        linha.appendChild(dd); dl.appendChild(linha);
+      });
+    });
+  }
+
+  /* ---------- base de informações da Dra. Rafaella ----------
+     Tudo aqui vem do site dela: áreas de atuação, método, sobre, experiência, princípios e FAQ. */
+  var BASE = [
+    { id: 'atletas', rot: 'se o atendimento é só para atletas', k: ['atleta', 'so para quem treina', 'sedentari', 'nao treino', 'iniciante'],
+      fonte: 'FAQ do site da Rafaella',
+      txt: 'Não é só para atletas. A Rafaella atua em nutrição esportiva e clínica, e atende também quem é fisicamente ativo ou busca saúde e melhora da composição corporal.' },
+    { id: 'composicao', rot: 'composição corporal', k: ['emagrec', 'perder peso', 'perder gordura', 'secar', 'massa', 'hipertrofia', 'definir', 'composicao'],
+      fonte: 'site, área Composição corporal',
+      txt: 'Ela trabalha composição corporal com estratégia para reduzir gordura e preservar ou ganhar massa magra, sem atalhos e sem promessas irreais.' },
+    { id: 'esporte', rot: 'alimentação e treino', k: ['treino', 'trein', 'crossfit', 'corrida', 'correr', 'muscula', 'performance', 'academia', 'esport', 'prova', 'competi'],
+      fonte: 'site, área Nutrição esportiva',
+      txt: 'Essa é bem a área dela. Na nutrição esportiva a Rafaella organiza a alimentação de quem treina, de praticantes a atletas, com foco em energia, recuperação, desempenho e composição corporal.' },
+    { id: 'suplementos', rot: 'suplementação', k: ['suplement', 'creatina', 'whey', 'pre-treino', 'pre treino', 'termogenico'],
+      fonte: 'site, área Suplementação com critério',
+      txt: 'Suplementação ela usa com critério: entra quando faz sentido para o seu objetivo e o seu contexto, como ferramenta, e não como atalho ou substituto de uma alimentação bem estruturada. Qual usar, ela define na consulta.' },
+    { id: 'restricao', rot: 'medo de dieta restritiva', k: ['cortar', 'proibi', 'restri', 'passar fome', 'carboidrato', 'dieta maluca', 'doce', 'vilao'],
+      fonte: 'site, seção Princípios',
+      txt: 'Pode ficar sem esse receio. A linha da Rafaella é nutrição sem terrorismo: não é sobre cortar tudo, e nenhum alimento isolado vira vilão. Até os “extras” entram no planejamento, sem culpa e sem compensação.' },
+    { id: 'clinica', rot: 'nutrição clínica e saúde', k: ['saude', 'colesterol', 'glicemia', 'diabetes', 'habito', 'reeducacao', 'clinica'],
+      fonte: 'site, área Nutrição clínica',
+      txt: 'Na nutrição clínica o acompanhamento é individualizado, voltado para saúde, rotina e construção de hábitos sustentáveis.' },
+    { id: 'prazo', rot: 'prazo de resultado', k: ['em quanto tempo', 'resultado rapido', 'quantos quilos', 'quanto tempo pra', 'quanto tempo para', 'quanto tempo leva'],
+      fonte: 'site, áreas de atuação',
+      txt: 'Prazo eu não consigo te prometer, e a Rafaella também não trabalha com promessas irreais. O plano vai sendo ajustado conforme a sua resposta e a sua aderência.' },
+    { id: 'experiencia', rot: 'experiência da Rafaella', k: ['experiencia', 'botafogo', 'fluminense', 'futebol', 'clube', 'curriculo', 'trajetoria', 'quem e a rafaella', 'sobre a rafaella'],
+      fonte: 'site, seções Sobre e Experiência esportiva',
+      txt: 'A Rafaella tem vivência de campo e de consultório. Ela trabalhou mais de 3 anos no Botafogo, em categorias de base e no futebol feminino, e o perfil profissional dela indica atuação atual junto ao futebol feminino do Fluminense.' },
+    { id: 'formacao', rot: 'formação', k: ['formacao', 'formada', 'especiali', 'crn', 'cfn', 'faculdade', 'registro'],
+      fonte: 'site, seção Sobre',
+      txt: 'Ela é nutricionista formada pela UERJ, com pós-graduação em Nutrição Esportiva pela NUTMED. O registro profissional informado é CFN 24100795 RJ.' },
+    { id: 'como', rot: 'como funciona o acompanhamento', k: ['como funciona', 'como e a consulta', 'primeira consulta', 'como sao as consultas', 'metodo'],
+      fonte: 'site, seção Método de acompanhamento',
+      txt: 'O acompanhamento tem quatro etapas: avaliação da sua rotina, objetivo, treinos e histórico; definição da estratégia e do plano individualizado; orientações práticas para aplicar no dia a dia; e ajustes conforme a sua resposta e a sua evolução.' },
+    { id: 'convenio', rot: 'convênio', k: ['convenio', 'plano de saude', 'reembolso', 'unimed', 'amil', 'sulamerica', 'particular'],
+      fonte: 'FAQ do site (perfil na Doctoralia)',
+      txt: 'O atendimento é particular. Condições e possibilidade de reembolso eu confirmo com a Rafaella e te passo por aqui.' },
+    { id: 'local', rot: 'endereço', k: ['endereco', 'onde fica', 'onde e', 'localiza', 'como chego', 'qual bairro'],
+      fonte: 'FAQ do site',
+      txt: 'O consultório fica na ' + ENDERECO + '.' }
+  ];
+  var CONFIRMAR = [
+    ['valores', ['valor', 'preco', 'quanto custa', 'quanto e', 'quanto fica', 'investimento']],
+    ['atendimento online', ['online', 'on-line', 'por video', 'a distancia']],
+    ['formas de pagamento', ['pix', 'cartao', 'parcel', 'pagamento']],
+    ['duração e retorno', ['quanto tempo dura', 'duracao', 'retorno']],
+    ['exames e avaliação física', ['bioimped', 'exame', 'avaliacao fisica']],
+    ['atendimento para esse público', ['crianca', 'gestante', 'gravida', 'idoso', 'adolescente', 'meu filho', 'minha filha']],
+    ['estacionamento', ['estacionamento']],
+    ['horários de atendimento', ['que horas', 'horario de atendimento', 'sabado', 'funciona ate']]
+  ];
+  var OBJ = [
+    ['Performance no treino', ['treino', 'trein', 'crossfit', 'corrida', 'correr', 'muscula', 'performance', 'academia', 'esport', 'maratona', 'prova']],
+    ['Composição corporal', ['emagrec', 'perder peso', 'perder gordura', 'secar', 'massa', 'hipertrofia', 'definir', 'composicao']],
+    ['Saúde e hábitos', ['saude', 'colesterol', 'glicemia', 'habito', 'comer melhor', 'dia a dia']],
+    ['Suplementação', ['suplement', 'creatina', 'whey']]
+  ];
+
+  /* ---------- entendimento da mensagem ---------- */
+  function entender(texto) {
+    var t = norm(texto), limpo = texto.trim(), achou = { campos: [], notas: [], t: t };
+    var pergunta = t.indexOf('?') !== -1;
+
+    achou.querAgendar = tem(t, ['agend', 'marcar', 'quero consulta', 'quero uma consulta', 'quero comecar', 'tem vaga', 'tem horario', 'quero sim']) ||
+      (S.ofereceu && /^(sim|quero|pode|bora|vamos|claro|por favor|gostaria|com certeza)\b/.test(t));
+
+    var objs = [];
+    OBJ.forEach(function (o) { if (tem(t, o[1]) && S.objetivo.indexOf(o[0]) === -1) { objs.push(o[0]); } });
+
+    var perguntaOnline = pergunta && /(atend\w*|faz\w*|tem|voces|vcs|da pra|da para)\b[^?]*on-?line/.test(t);
+    achou.temas = BASE.filter(function (b) { return b.id === 'online' ? perguntaOnline : tem(t, b.k); });
+    if (achou.temas.some(function (b) { return b.id === 'plato'; })) { achou.temas = achou.temas.filter(function (b) { return b.id !== 'emagrecer'; }); }
+    if ((S.querAgendar || achou.querAgendar) && !pergunta) { achou.temas = []; }
+    var novosTemas = achou.temas.filter(function (b) { return !S.ditos[b.id]; });
+    achou.temas = (novosTemas.length ? novosTemas : achou.temas).slice(0, 2);
+    achou.confirmar = CONFIRMAR.filter(function (c) { return tem(t, c[1]); }).map(function (c) { return c[0]; });
+
+    var m = texto.match(/(?:\b[Ss]ou (?:a|o)\s+|[Mm]e chamo\s+|[Mm]eu nome (?:e|é)\s+|[Aa]qui (?:e|é) (?:a|o)\s+|[Pp]ode me chamar de\s+)([A-Za-zÀ-ÿ]{2,}(?:\s+[A-ZÀ-Ý][a-zà-ÿ]+)?)/);
+    var nome = m ? m[1] : null;
+    var nadaMais = !objs.length && !achou.temas.length && !achou.confirmar.length && !achou.querAgendar;
+    var pareceNome = /^[A-Za-zÀ-ÿ]{2,}(\s+[A-Za-zÀ-ÿ]{2,}){0,2}[.!]?$/.test(limpo) && !/^(oi+|ola|olá|sim|nao|não|ok|certo|entendi|beleza|blz|valeu|tchau|quero|obrigad[oa]|muito obrigad[oa]|bom dia|boa tarde|boa noite|tenho outra d[uú]vida)[.!]?$/i.test(limpo);
+    if (!nome && !S.nome && nadaMais && pareceNome && (S.esperando === 'nome' || S.pediuNome || /^[A-ZÀ-Ý]/.test(limpo))) { nome = limpo.replace(/[.!]$/, ''); }
+    if (nome && !S.nome) { S.nome = nome.charAt(0).toUpperCase() + nome.slice(1); achou.campos.push('nome'); achou.notas.push('nome ' + S.nome); }
+
+    if (!objs.length && !nome && S.esperando === 'objetivo' && limpo.length > 2 && !pergunta && !achou.querAgendar && !/outra d[uú]vida/i.test(limpo)) { objs.push(limpo.slice(0, 60)); }
+    if (objs.length) { S.objetivo = S.objetivo.concat(objs); achou.campos.push('objetivo'); achou.notas.push('objetivo: ' + objs.join(' e ')); }
+
+    if (!S.formato) {
+      if (/on-?line|por video|a distancia/.test(t) && !perguntaOnline) { S.formato = 'Online'; }
+      else if (tem(t, ['presencial', 'consultorio', 'pessoalmente', 'ir ai', 'na freguesia']) && !pergunta) { S.formato = 'Presencial na Freguesia'; }
+      if (S.formato) { achou.campos.push('formato'); achou.notas.push('atendimento ' + S.formato.toLowerCase()); }
+    }
+    if (!S.periodo) {
+      var tp = t.replace(/bom dia|boa tarde|boa noite/g, ' ');
+      if (tem(tp, ['manha', 'cedo'])) { S.periodo = 'Manhã'; }
+      else if (tem(tp, ['tarde', 'almoco'])) { S.periodo = 'Tarde'; }
+      else if (tem(tp, ['tanto faz', 'qualquer horario', 'qualquer periodo'])) { S.periodo = 'Manhã ou tarde'; }
+      else if (tem(tp, ['noite', 'depois das 18', 'apos as 18', 'depois do trabalho']) && (S.querAgendar || achou.querAgendar)) { achou.noite = true; achou.notas.push('pediu horário à noite'); }
+      if (S.periodo) { achou.campos.push('periodo'); achou.notas.push('prefere ' + S.periodo.toLowerCase()); }
+    }
+
+    achou.pedeDieta = /(me passa|me manda|me da|monta|quero)\b.*(dieta|cardapio)|o que (eu )?(devo |posso )?com(er|o)\b|quantas calorias/.test(t);
+    achou.urgente = tem(t, ['dor forte', 'passando mal', 'emergencia', 'desmai']);
+    achou.perguntaPessoa = pergunta && /\b(robo|bot|ia|inteligencia artificial|maquina|humano|humana|pessoa|gente de verdade|atendente)\b/.test(t) && /\b(voce|vc|e um|e uma|falando com|sou atendid)/.test(t);
+    achou.saudacao = /^(oi+|ola|bom dia|boa tarde|boa noite|opa|e ai)\b/.test(t);
+    achou.outraDuvida = tem(t, ['outra duvida', 'tenho uma duvida', 'mais uma duvida', 'outra pergunta']);
+    return achou;
+  }
+
+  /* ---------- agenda simulada ---------- */
+  function horarios() {
+    var dias = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'], out = [], d = new Date(), i = 0;
+    var horas = S.periodo === 'Tarde' ? ['14:00', '16:30'] : (S.periodo === 'Manhã' ? ['08:30', '10:00'] : ['09:00', '15:00']);
+    while (out.length < 2) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0 && d.getDay() !== 6) {
+        out.push(dias[d.getDay()] + ', ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' às ' + horas[i]);
+        i += 1;
+      }
+    }
+    return out;
+  }
+
+  /* ---------- decisão do atendimento ---------- */
+  function faltando() {
+    if (!S.nome) { return 'nome'; }
+    if (!S.objetivo.length) { return 'objetivo'; }
+    if (!S.formato) { return 'formato'; }
+    if (!S.periodo) { return 'periodo'; }
+    return null;
+  }
+  var PERGUNTA = {
+    nome: ['Com prazer! Pra eu reservar direitinho, como posso te chamar?', null],
+    objetivo: ['Perfeito. Só pra Rafaella já chegar preparada: qual é o seu principal objetivo hoje?', ['Performance no treino', 'Composição corporal', 'Saúde e hábitos', 'Suplementação']],
+    formato: ['Você prefere vir ao consultório, aqui na Freguesia, ou fazer online?', ['Presencial', 'Online']],
+    periodo: ['E qual período costuma ser melhor pra você?', ['Manhã', 'Tarde', 'Tanto faz']]
+  };
+  function sugestoes() {
+    var todas = [['Como funciona o acompanhamento?', 'como'], ['É só para atletas?', 'atletas'], ['Onde fica o consultório?', 'local'], ['Qual a experiência dela?', 'experiencia']];
+    return todas.filter(function (s) { return !S.ditos[s[1]]; }).slice(0, 2).map(function (s) { return s[0]; }).concat(['Quero agendar']);
+  }
+
+  function oferecer(prefixo) {
+    var li;
+    if (prefixo) { dizer(prefixo); }
+    dizer('Deixa eu olhar a agenda dela pra você, só um instante.');
+    passo(400, function () { li = registro('rodando', 'Consultando a agenda da Rafaella', 'Procurando horários livres: ' + S.periodo.toLowerCase() + ', ' + S.formato.toLowerCase() + '.', true); });
+    passo(1600, function () {
+      S.opcoes = horarios(); S.fase = 'oferta'; S.status = 'Escolhendo horário'; ficha(['status']);
+      li.className = 'agir';
+      li.querySelector('span').textContent = 'Encontrou 2 horários livres e separou para oferecer.';
+    });
+    passo(10, function () {
+      dizer('Achei dois horários:\n\n1. ' + S.opcoes[0] + '\n2. ' + S.opcoes[1] + '\n\nAlgum deles fica bom pra você?', { botoes: ['Quero o 1', 'Quero o 2', 'Nenhum serve'] });
+    });
+  }
+
+  function reservar(i) {
+    S.horario = S.opcoes[i]; S.fase = 'fechado'; S.status = 'Consulta pré-agendada';
+    var primeiro = S.nome.split(' ')[0];
+    var resumo = 'Nome: ' + S.nome + '\nObjetivo: ' + S.objetivo.join(', ') + '\nAtendimento: ' + S.formato + '\nHorário: ' + S.horario;
+    passo(600, function () { registro('agir', 'Reservou o horário na agenda', S.horario + ', ' + S.formato.toLowerCase() + '.', true); ficha(['horario', 'status']); });
+    anotar(700, 'agir', 'Salvou a ficha no CRM', 'Paciente novo, com objetivo, dúvidas da conversa e origem do contato.', true);
+    passo(700, function () {
+      registro('agir', 'Programou as próximas tarefas', 'Lembrete, formulário pré-consulta e retorno em caso de falta.', true);
+      $('sem-tarefas').hidden = true; var ul = $('tarefas'); ul.textContent = '';
+      ['Lembrete 24 horas antes da consulta', 'Formulário pré-consulta enviado ao paciente', 'Nova tentativa se o paciente não confirmar', 'Pedido de avaliação no Google após a consulta'].forEach(function (x) { ul.appendChild(el('li', '', x)); });
+    });
+    anotar(700, 'humano', 'Avisou a Rafaella', 'Enviou o resumo pronto para ela só confirmar.', true);
+    dizer('Prontinho, ' + primeiro + ', deixei reservado:\n\n' + resumo, {
+      link: { url: AGENDA, rotulo: 'Abrir o canal de agendamento da Rafaella' }
+    });
+    dizer('A Rafaella confirma com você por aqui, e eu te lembro um dia antes. Qualquer dúvida até lá, é só me chamar.', { botoes: sugestoes().slice(0, 2) });
+  }
+
+  function agir(texto) {
+    var a = entender(texto), partes = [], decisao, fecho, bts;
+    if (a.querAgendar) { S.querAgendar = true; }
+    var primeiro = S.nome ? S.nome.split(' ')[0] : '';
+
+    var leitura = a.notas.slice();
+    a.temas.forEach(function (b) { leitura.push('dúvida sobre ' + b.rot); });
+    a.confirmar.forEach(function (c) { leitura.push('dúvida sobre ' + c); });
+    if (a.querAgendar && S.fase === 'coleta') { leitura.push('quer agendar'); }
+    if (a.pedeDieta) { leitura.push('pedido de orientação alimentar'); }
+    if (a.urgente) { leitura.push('possível urgência de saúde'); }
+    if (a.perguntaPessoa) { leitura.push('pergunta sobre quem está atendendo'); }
+    var esc = -1;
+    if (S.fase === 'oferta' && !tem(a.t, ['nenhum', 'nao serve', 'nao consigo'])) {
+      esc = /\b(1|um|primeir\w*)\b/.test(a.t) ? 0 : (/\b(2|dois|segund\w*)\b/.test(a.t) ? 1 : -1);
+      if (esc === -1 && S.opcoes) { S.opcoes.forEach(function (o, i) { if (a.t.indexOf(norm(o).split(' as ')[1]) !== -1) { esc = i; } }); }
+      if (esc !== -1) { leitura.push('escolha do horário: opção ' + (esc + 1)); }
+    }
+    anotar(350, 'ler', 'Leu a mensagem', leitura.length ? 'Identificou: ' + leitura.join('; ') + '.' : 'Não encontrou dado novo nem dúvida conhecida.');
+    if (a.campos.length) { passo(250, function () { registro('agir', 'Atualizou a ficha do paciente', a.campos.length + (a.campos.length > 1 ? ' campos preenchidos' : ' campo preenchido') + ' a partir do texto livre.', true); ficha(a.campos); }); }
+
+    if (a.urgente) {
+      anotar(300, 'humano', 'Encaminhou para atendimento humano', 'Regra de segurança: o atendimento não avalia sintomas.');
+      dizer('Sinto muito que você esteja passando por isso. Eu não posso avaliar sintomas. Se for urgente, procure atendimento médico ou ligue 192 (SAMU). Já avisei a Rafaella do seu contato.');
+      return;
+    }
+
+    if (a.temas.length) {
+      a.temas.forEach(function (b) { partes.push(b.txt); S.ditos[b.id] = true; });
+      anotar(300, 'agir', 'Consultou as informações da Rafaella', 'Fonte: ' + a.temas.map(function (b) { return b.fonte; }).join('; ') + '.');
+    }
+    if (a.confirmar.length) {
+      anotar(300, 'humano', 'Pediu confirmação à Rafaella', 'Ainda não cadastrado: ' + a.confirmar.join(', ') + ' (entra na versão final).', true);
+      partes.push('Sobre ' + a.confirmar.join(' e ') + ', eu prefiro confirmar com a Rafaella pra te passar certinho. Já te respondo por aqui.');
+    }
+    if (a.perguntaPessoa) {
+      anotar(300, 'regra', 'Respondeu com transparência', 'Quando o paciente pergunta quem atende, a resposta é verdadeira.');
+      partes.push('Sou o assistente digital do consultório da Rafaella. Cuido das dúvidas e do agendamento, e ela acompanha tudo de perto.');
+    }
+    if (a.pedeDieta) {
+      anotar(300, 'regra', 'Aplicou uma regra da profissão', 'Não passa dieta nem orientação alimentar pelo chat.');
+      partes.push('Dieta e cardápio eu não consigo te passar por aqui, porque isso depende de uma avaliação só sua. É exatamente o que a Rafaella faz na consulta.');
+    }
+    if (a.noite) {
+      anotar(300, 'humano', 'Pediu confirmação à Rafaella', 'Horário à noite não está na agenda cadastrada.', true);
+      partes.push('Horário à noite eu preciso confirmar com a Rafaella, já deixei o pedido com ela. Por enquanto consigo te oferecer manhã e tarde.');
+    }
+    var teveResposta = partes.length > 0;
+
+    if (S.fase === 'oferta') {
+      if (esc !== -1) { reservar(esc); return; }
+      if (tem(a.t, ['nenhum', 'nao serve', 'nao consigo', 'outro horario', 'outro dia'])) {
+        anotar(300, 'humano', 'Passou para a Rafaella', 'Paciente precisa de um horário fora dos disponíveis.', true);
+        dizer((teveResposta ? partes.join('\n\n') + '\n\n' : '') + 'Sem problema nenhum. Passei seu pedido para a Rafaella encontrar um horário que funcione, e ela te chama por aqui.');
+        S.status = 'Aguardando a Rafaella'; passo(10, function () { ficha(['status']); });
+        return;
+      }
+      if (teveResposta) { dizer(partes.join('\n\n')); }
+      dizer('E sobre os horários, algum dos dois fica bom pra você?', { botoes: ['Quero o 1', 'Quero o 2', 'Nenhum serve'] });
+      return;
+    }
+    if (S.fase === 'fechado') {
+      dizer(teveResposta ? partes.join('\n\n') : 'Seu horário está reservado para ' + S.horario + '. Se precisar remarcar, é só me avisar.', { botoes: sugestoes().slice(0, 2) });
+      return;
+    }
+
+    /* paciente quer agendar: só agora o atendimento coleta o que falta */
+    if (S.querAgendar) {
+      decisao = faltando();
+      S.esperando = decisao;
+      if (teveResposta) { dizer(partes.join('\n\n')); }
+      if (decisao) {
+        anotar(300, 'regra', 'Decidiu o próximo passo', 'Paciente quer agendar. Falta ' + ({ nome: 'o nome', objetivo: 'o objetivo', formato: 'o formato de atendimento', periodo: 'o período preferido' })[decisao] + '.');
+        dizer((a.campos.indexOf('nome') !== -1 ? 'Prazer, ' + primeiro + '! ' : '') + PERGUNTA[decisao][0], { botoes: PERGUNTA[decisao][1] });
+      } else {
+        anotar(300, 'regra', 'Decidiu o próximo passo', 'Ficha completa: pode consultar a agenda.');
+        oferecer(a.campos.indexOf('nome') !== -1 ? 'Prazer, ' + primeiro + '!' : (teveResposta ? '' : 'Que bom' + (primeiro ? ', ' + primeiro : '') + '!'));
+      }
+      return;
+    }
+
+    /* modo conversa: tira dúvidas sem empurrar o agendamento */
+    if (teveResposta) { S.respondidas += 1; }
+    if (!teveResposta) {
+      if (a.campos.indexOf('nome') !== -1 && a.campos.length === 1) {
+        S.esperando = 'objetivo';
+        anotar(300, 'regra', 'Decidiu o próximo passo', 'Conhecer o motivo do contato antes de qualquer oferta.');
+        dizer('Prazer, ' + primeiro + '! Me conta, o que te fez procurar a Rafaella?');
+        return;
+      }
+      if (a.outraDuvida) { dizer('Claro, pode perguntar à vontade.'); return; }
+      if (a.saudacao && !a.campos.length) {
+        dizer('Oi' + (primeiro ? ', ' + primeiro : '') + '! Tudo bem? Me conta, como posso te ajudar?', { botoes: sugestoes() });
+        return;
+      }
+      if (a.campos.length) { partes.push('Entendi' + (primeiro ? ', ' + primeiro : '') + '. Obrigado por me contar, já anotei aqui pra Rafaella.'); }
+      else {
+        anotar(300, 'humano', 'Encaminhou a pergunta para a Rafaella', 'Preferiu não responder sem informação confirmada.', true);
+        partes.push('Essa eu prefiro confirmar com a Rafaella pra não te passar nada errado. Já encaminhei pra ela e te respondo por aqui.');
+      }
+    }
+    if (!S.nome && !S.pediuNome) {
+      S.esperando = 'nome'; S.pediuNome = true;
+      fecho = 'A propósito, como posso te chamar?'; bts = null;
+      anotar(300, 'regra', 'Decidiu o próximo passo', 'Perguntar o nome para personalizar a conversa, sem falar de agendamento ainda.');
+    } else if (S.respondidas >= 3 && !S.ofereceu) {
+      S.ofereceu = true; S.esperando = null;
+      fecho = 'Se fizer sentido pra você' + (primeiro ? ', ' + primeiro : '') + ', eu posso ver um horário com a Rafaella. Quer que eu olhe?'; bts = ['Quero sim', 'Tenho outra dúvida'];
+      anotar(300, 'regra', 'Decidiu o próximo passo', 'Paciente já tirou as principais dúvidas: oferecer um horário, sem pressão.');
+    } else {
+      S.esperando = S.objetivo.length ? null : 'objetivo';
+      fecho = S.objetivo.length ? 'Ficou mais alguma dúvida? Pode perguntar à vontade.' : 'E me conta, qual é o seu objetivo hoje?'; bts = sugestoes();
+      anotar(300, 'regra', 'Decidiu o próximo passo', 'Continuar tirando dúvidas, sem forçar o agendamento.');
+    }
+    dizer((a.campos.indexOf('nome') !== -1 ? 'Prazer, ' + primeiro + '! ' : '') + partes.join('\n\n'));
+    dizer(fecho, { botoes: bts });
+  }
+
+  function paciente(texto) {
+    texto = (texto || '').trim();
+    if (!texto) { return; }
+    bolha('out', texto.slice(0, 400));
+    botoes([]);
+    agir(texto);
+  }
+
+  /* ---------- demonstração automática ---------- */
+  var ROTEIRO = [
+    'Oi, boa noite! Queria tirar umas dúvidas. Eu faço musculação e corrida, mas não sou atleta. A Rafaella atende esse tipo de caso?',
+    'Sou o Bruno. Vou ter que cortar carboidrato? E como funciona o acompanhamento?',
+    'Qual a experiência dela? E quanto custa?',
+    'Quero sim! De manhã',
+    'Pode ser o primeiro'
+  ];
+  function esperar(ms, g) { return new Promise(function (ok) { window.setTimeout(ok, ms); }).then(function () { return g === gen; }); }
+  function ocioso() { var f = fila; return f.then(function () { return f === fila ? true : ocioso(); }); }
+  function tocar() {
+    comecar(); tocando = true; $('auto').disabled = true;
+    var g = gen, p = Promise.resolve(true);
+    ROTEIRO.forEach(function (fala) {
+      p = p.then(function (vivo) { return vivo && ocioso().then(function () { return esperar(1800, g); }); })
+           .then(function (vivo) { if (vivo) { paciente(fala); } return vivo; });
+    });
+    p.then(function (vivo) { return vivo && ocioso(); }).then(function () { if (g === gen) { tocando = false; $('auto').disabled = false; } });
+  }
+
+  function comecar() {
+    gen += 1; fila = Promise.resolve(); tocando = false; novos = 0;
+    S = { nome: '', objetivo: [], formato: 'Presencial na Freguesia', periodo: '', horario: '', status: 'Em atendimento', fase: 'coleta', esperando: null, opcoes: null, querAgendar: false, ofereceu: false, pediuNome: false, respondidas: 0, ditos: {} };
+    log.textContent = ''; trail.textContent = ''; $('tarefas').textContent = ''; $('badge').textContent = '';
+    $('vazio').hidden = false; $('sem-tarefas').hidden = false; $('auto').disabled = false;
+    botoes([]); ficha();
+    dizer('Olá! Tudo bem? Aqui é do atendimento da nutricionista Rafaella Martins.');
+    dizer('Pode me perguntar o que quiser sobre o trabalho dela e sobre as consultas. Como posso te ajudar?', { botoes: sugestoes() });
+  }
+
+  $('composer').addEventListener('submit', function (e) { e.preventDefault(); var v = campo.value; campo.value = ''; if (!tocando) { paciente(v); } });
+  $('reset').addEventListener('click', comecar);
+  $('auto').addEventListener('click', tocar);
+  Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) {
+    b.addEventListener('click', function () {
+      var aba = b.getAttribute('data-tab');
+      document.body.setAttribute('data-tab', aba);
+      $('tab-conversa').setAttribute('aria-selected', aba === 'conversa' ? 'true' : 'false');
+      $('tab-bastidores').setAttribute('aria-selected', aba === 'bastidores' ? 'true' : 'false');
+      if (aba === 'bastidores') { novos = 0; $('badge').textContent = ''; }
+    });
+  });
+
+  comecar();
+})();
+</script>
+</body>
+</html>
